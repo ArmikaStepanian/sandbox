@@ -1,4 +1,4 @@
-package com.stepanian.sandbox;
+package com.stepanian.sandbox.pojo;
 
 import lombok.Data;
 
