@@ -1,6 +1,7 @@
 package com.stepanian.sandbox.web;
 
-import com.stepanian.sandbox.DebitCard;
+import com.stepanian.sandbox.pojo.DebitCard;
+import com.stepanian.sandbox.util.StringModifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +21,8 @@ public class Controller {
 
     private DebitCard card() {
         String cardNumber = "1563145896354789";
-        return new DebitCard(cardNumber, maskCardNumber(cardNumber),
+        return new DebitCard(cardNumber, StringModifier.maskCardNumber(cardNumber),
                 LocalDate.of(2021, 12, 5), "Kluch", BigDecimal.valueOf(156983.89)
         );
     }
-
-    private String maskCardNumber(String cardNumber) {
-        int length = cardNumber.length();
-        StringBuilder maskedNumber = new StringBuilder();
-
-        maskedNumber.append(cardNumber, 0, 6);
-        for (int i = 6; i < length - 4; i++) {
-            maskedNumber.append("X");
-        }
-        maskedNumber.append(cardNumber, length - 4, length);
-
-        return maskedNumber.toString();
-    }
-
 }
