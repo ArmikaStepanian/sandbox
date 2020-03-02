@@ -19,12 +19,14 @@ public class PreparedStatementTest {
     private static String SELECT_QUERY = "SELECT * FROM client WHERE id = ?";
     private static String UPDATE_QUERY = "UPDATE client SET last_name = ? WHERE id = ?";
     private static String UPDATE_SET_PHOTO = "UPDATE client SET photo = ? WHERE id = ?";
+    private static String SELECT_MULTIPLE = "SELECT * FROM client WHERE first_name = ?";
 
     public static void main(String[] args) throws IOException, SQLException {
         save("John", "Doe", LocalDate.of(1986, 5, 31));
         System.out.println(findOne(1));
         update("Bob", 5);
         setPhoto(1, "chamomile.jpg");
+        selectMultiple("Nick");
     }
 
     public static void save(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
@@ -65,11 +67,36 @@ public class PreparedStatementTest {
         }
     }
 
+    public static void selectMultiple(String firstName) throws IOException, SQLException {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_MULTIPLE)) {
+            preparedStatement.setString(1, firstName);
+
+            boolean isResult = preparedStatement.execute();
+            boolean done = false;
+            while (!done) {
+                if (isResult) {
+                    ResultSet resultSet = preparedStatement.getResultSet();
+                    System.out.println(showResultSet(resultSet));
+                } else {
+                    int updateCount = preparedStatement.getUpdateCount();
+                    if (updateCount < 0) {
+                        done = true;
+                    }
+                }
+                if (!done) {
+                    isResult = preparedStatement.getMoreResults();
+                }
+            }
+        }
+    }
+
     public static String showResultSet(ResultSet result) throws SQLException {
         ResultSetMetaData metaData = result.getMetaData();
         int columnCount = metaData.getColumnCount();
         StringBuilder stringBuilder = new StringBuilder();
         while (result.next()) {
+            stringBuilder.append("\n");
             for (int i = 1; i <= columnCount; i++) {
                 if (i > 1) {
                     stringBuilder.append(",	");

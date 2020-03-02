@@ -6,5 +6,5 @@ INSERT INTO client (first_name, last_name, birthday) values ('Igor', 'Toropov', 
 INSERT INTO client (first_name, last_name, birthday) values ('Egor', 'Zolotov', '1982-12-13T00:00:00Z')
 INSERT INTO client (first_name, last_name, birthday) values ('Mikhail', 'Ivanov', '1996-01-03T00:00:00Z')
 INSERT INTO client (first_name, last_name, birthday) values ('Potap', 'Sodorov', '1990-11-14T00:00:00Z')
-INSERT INTO client (first_name, last_name, birthday) values ('Alex', 'Toropov', '1988-12-07T00:00:00Z')
+INSERT INTO client (first_name, last_name, birthday) values ('Nick', 'Toropov', '1988-12-07T00:00:00Z')
 INSERT INTO client (first_name, last_name, birthday) values ('Nick', 'Golubev', '1986-12-08T00:00:00Z')
