@@ -1,6 +1,8 @@
 package com.stepanian.sandbox.pureJdbc;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +18,13 @@ public class PreparedStatementTest {
     private static String INSERT_QUERY = "INSERT INTO client (first_name, last_name, birthday) VALUES (?, ?, ?)";
     private static String SELECT_QUERY = "SELECT * FROM client WHERE id = ?";
     private static String UPDATE_QUERY = "UPDATE client SET last_name = ? WHERE id = ?";
+    private static String UPDATE_SET_PHOTO = "UPDATE client SET photo = ? WHERE id = ?";
 
     public static void main(String[] args) throws IOException, SQLException {
         save("John", "Doe", LocalDate.of(1986, 5, 31));
         System.out.println(findOne(1));
         update("Bob", 5);
+        setPhoto(1, "chamomile.jpg");
     }
 
     public static void save(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
@@ -45,6 +49,17 @@ public class PreparedStatementTest {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
             preparedStatement.setString(1, lastName);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        }
+    }
+
+    public static void setPhoto(Integer id, String fileName) throws IOException, SQLException {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SET_PHOTO);
+             FileInputStream fileInputStream = new FileInputStream(Paths.get("src/main/resources/sql/" + fileName).toFile());
+        ) {
+            preparedStatement.setBinaryStream(1, fileInputStream);
             preparedStatement.setInt(2, id);
             preparedStatement.execute();
         }
