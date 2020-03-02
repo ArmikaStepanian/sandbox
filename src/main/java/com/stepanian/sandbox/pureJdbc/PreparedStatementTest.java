@@ -1,5 +1,7 @@
 package com.stepanian.sandbox.pureJdbc;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 
 import static com.stepanian.sandbox.pureJdbc.ConnectionManager.getConnection;
 
+@Slf4j
 public class PreparedStatementTest {
 
     private static String INSERT_QUERY = "INSERT INTO client (first_name, last_name, birthday) VALUES (?, ?, ?)";
@@ -29,6 +32,7 @@ public class PreparedStatementTest {
         setPhoto(1, "chamomile.jpg");
         selectMultiple("Nick");
         System.out.println(getInsertedId("John", "Doe", LocalDate.of(1986, 5, 31)));
+        transactionalMethod("David", "Pirogov", LocalDate.of(1980, 6, 12));
 
     }
 
@@ -108,6 +112,32 @@ public class PreparedStatementTest {
             }
         }
         return key;
+    }
+
+    public static void transactionalMethod(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
+        int key = 0;
+        try (Connection connection = getConnection();
+             PreparedStatement insert = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement update = connection.prepareStatement(UPDATE_QUERY)) {
+            try {
+                connection.setAutoCommit(false);
+                insert.setString(1, firstName);
+                insert.setString(2, lastName);
+                insert.setObject(3, birthday, Types.DATE);
+                insert.execute();
+                ResultSet resultSet = insert.getGeneratedKeys();
+                if (resultSet.next()) {
+                    key = resultSet.getInt(1);
+                }
+                update.setString(1, firstName);
+                update.setInt(2, key);
+                update.execute();
+                connection.commit();
+            } catch (SQLException e) {
+                log.error("SQLException", e);
+                connection.rollback();
+            }
+        }
     }
 
     public static String showResultSet(ResultSet result) throws SQLException {
