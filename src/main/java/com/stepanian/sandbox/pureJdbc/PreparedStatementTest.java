@@ -33,6 +33,7 @@ public class PreparedStatementTest {
         selectMultiple("Nick");
         System.out.println(getInsertedId("John", "Doe", LocalDate.of(1986, 5, 31)));
         transactionalMethod("David", "Pirogov", LocalDate.of(1980, 6, 12));
+        batchMethod("John", "Doe", LocalDate.of(1986, 5, 31));
 
     }
 
@@ -137,6 +138,28 @@ public class PreparedStatementTest {
                 log.error("SQLException", e);
                 connection.rollback();
             }
+        }
+    }
+
+    public static void batchMethod(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
+            preparedStatement.setString(1, firstName + "_1");
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setObject(3, birthday, Types.DATE);
+            preparedStatement.addBatch();
+
+            preparedStatement.setString(1, firstName + "_2");
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setObject(3, birthday, Types.DATE);
+            preparedStatement.addBatch();
+
+            preparedStatement.setString(1, firstName + "_3");
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setObject(3, birthday, Types.DATE);
+            preparedStatement.addBatch();
+
+            System.out.println("Inserted rows - " + preparedStatement.executeBatch().length);
         }
     }
 
