@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 
@@ -27,6 +28,8 @@ public class PreparedStatementTest {
         update("Bob", 5);
         setPhoto(1, "chamomile.jpg");
         selectMultiple("Nick");
+        System.out.println(getInsertedId("John", "Doe", LocalDate.of(1986, 5, 31)));
+
     }
 
     public static void save(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
@@ -59,7 +62,7 @@ public class PreparedStatementTest {
     public static void setPhoto(Integer id, String fileName) throws IOException, SQLException {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SET_PHOTO);
-             FileInputStream fileInputStream = new FileInputStream(Paths.get("src/main/resources/sql/" + fileName).toFile());
+             FileInputStream fileInputStream = new FileInputStream(Paths.get("src/main/resources/sql/" + fileName).toFile())
         ) {
             preparedStatement.setBinaryStream(1, fileInputStream);
             preparedStatement.setInt(2, id);
@@ -89,6 +92,22 @@ public class PreparedStatementTest {
                 }
             }
         }
+    }
+
+    public static int getInsertedId(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
+        int key = 0;
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setObject(3, birthday, Types.DATE);
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                key = resultSet.getInt(1);
+            }
+        }
+        return key;
     }
 
     public static String showResultSet(ResultSet result) throws SQLException {
