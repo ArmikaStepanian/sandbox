@@ -16,25 +16,36 @@ import java.util.Scanner;
 @Slf4j
 public class TestDB {
 
-    public static void main(String[] args) throws IOException {
-        try {
-            runTest();
-        } catch (SQLException ex) {
-            log.error("SQLException: ", ex);
-        }
+    public static void main(String[] args) throws IOException, SQLException {
+        fillTable();
     }
 
-    public static void runTest() throws SQLException, IOException {
-        try (Connection connection = getConnection();
-             Scanner in = new Scanner(Paths.get("src/main/resources/sql/client.sql").toFile());
-             Statement statement = connection.createStatement();
-        ) {
-            while (true) {
-                if (in.hasNextLine()) {
-                    String line = in.nextLine().trim();
-                    statement.execute(line);
-                } else {
-                    break;
+    private static void fillTable() throws SQLException, IOException {
+        try (Scanner in = new Scanner(System.in)) {
+            System.out.println("Enter file name without extension, for example: client. Or enter EXIT");
+            if (!in.hasNextLine()) {
+                return;
+            }
+            String line = in.nextLine().trim();
+            if (line.equalsIgnoreCase("EXIT")) {
+                return;
+            }
+            try (Connection connection = getConnection();
+                 Scanner file = new Scanner(Paths.get("src/main/resources/sql/" + line + ".sql").toFile());
+                 Statement statement = connection.createStatement()) {
+                while (true) {
+                    if (!file.hasNextLine()) {
+                        return;
+                    }
+                    String query = file.nextLine().trim();
+                    if (query.endsWith(";")) {
+                        query = query.substring(0, query.length() - 1);
+                    }
+                    try {
+                        statement.execute(query);
+                    } catch (SQLException ex) {
+                        log.error("SQLException: ", ex);
+                    }
                 }
             }
         }
