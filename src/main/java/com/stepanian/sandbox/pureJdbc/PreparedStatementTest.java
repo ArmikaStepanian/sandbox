@@ -144,22 +144,30 @@ public class PreparedStatementTest {
     public static void batchMethod(String firstName, String lastName, LocalDate birthday) throws IOException, SQLException {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
-            preparedStatement.setString(1, firstName + "_1");
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setObject(3, birthday, Types.DATE);
-            preparedStatement.addBatch();
+            try {
+                connection.setAutoCommit(false);
+                preparedStatement.setString(1, firstName + "_1");
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setObject(3, birthday, Types.DATE);
+                preparedStatement.addBatch();
 
-            preparedStatement.setString(1, firstName + "_2");
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setObject(3, birthday, Types.DATE);
-            preparedStatement.addBatch();
+                preparedStatement.setString(1, firstName + "_2");
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setObject(3, birthday, Types.DATE);
+                preparedStatement.addBatch();
 
-            preparedStatement.setString(1, firstName + "_3");
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setObject(3, birthday, Types.DATE);
-            preparedStatement.addBatch();
+                preparedStatement.setString(1, firstName + "_3");
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setObject(3, birthday, Types.DATE);
+                preparedStatement.addBatch();
 
-            System.out.println("Inserted rows - " + preparedStatement.executeBatch().length);
+                int[] rows = preparedStatement.executeBatch();
+                connection.commit();
+                System.out.println("Inserted rows - " + rows.length);
+            } catch (SQLException e) {
+                log.error("SQLException", e);
+                connection.rollback();
+            }
         }
     }
 
