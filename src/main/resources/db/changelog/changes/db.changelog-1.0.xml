@@ -18,6 +18,9 @@
             <column name="birthday" type="DATE" remarks="Client birthday">
                 <constraints nullable="false"/>
             </column>
+            <column name="photo" type="BYTEA" remarks="Client photo">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
