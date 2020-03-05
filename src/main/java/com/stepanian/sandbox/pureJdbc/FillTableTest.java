@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-import static com.stepanian.sandbox.pureJdbc.ConnectionManager.getConnection;
+import static com.stepanian.sandbox.pureJdbc.util.ConnectionManager.getConnection;
 
 @Slf4j
 public class FillTableTest {

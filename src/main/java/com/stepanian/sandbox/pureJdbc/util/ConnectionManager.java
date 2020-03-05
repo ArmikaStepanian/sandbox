@@ -1,4 +1,4 @@
-package com.stepanian.sandbox.pureJdbc;
+package com.stepanian.sandbox.pureJdbc.util;
 
 import java.io.IOException;
 import java.io.InputStream;
