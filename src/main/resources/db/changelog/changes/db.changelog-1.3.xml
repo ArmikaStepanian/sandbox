@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20200404-1-0" author="stepanian">
+        <createTable tableName="exercise" remarks="Exercise">
+            <column name="id" type="INTEGER" remarks="Entry id" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_EXERCISE_ID"/>
+            </column>
+            <column name="title" type="VARCHAR(255)" remarks="Exercise title">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="INTEGER" remarks="Exercise category">
+                <constraints nullable="true" foreignKeyName="FK_CATEGORY_ID"/>
+            </column>
+            <column name="amount" type="INTEGER" remarks="Amount made">
+                <constraints nullable="false"/>
+            </column>
+            <column name="measure" type="INTEGER" remarks="Measure">
+                <constraints nullable="true" foreignKeyName="FK_MEASURE_ID"/>
+            </column>
+            <column name="date" type="DATE" remarks="Date exercise made">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
