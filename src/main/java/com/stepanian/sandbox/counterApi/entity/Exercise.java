@@ -1,5 +1,6 @@
 package com.stepanian.sandbox.counterApi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,16 +16,17 @@ import java.time.LocalDate;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
     private Integer amount;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "measure", referencedColumnName = "id")
     private Measure measure;
     private LocalDate date;

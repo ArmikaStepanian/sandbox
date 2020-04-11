@@ -19,7 +19,7 @@ public class RepositoryService {
     private final MeasureRepo measureRepo;
     private final ExerciseRepo exerciseRepo;
 
-    public void saveCategory(Category category) {
+    public void saveNewCategory(Category category) {
         categoryRepo.save(category);
     }
 
@@ -27,16 +27,16 @@ public class RepositoryService {
         categoryRepo.deleteById(id);
     }
 
-    public List<Category> findAll() {
+    public List<Category> findAllCategories() {
         return categoryRepo.findAll();
+    }
+
+    public List<Measure> findAllMeasures() {
+        return measureRepo.findAll();
     }
 
     public void saveMeasure(Measure measure) {
         measureRepo.save(measure);
-    }
-
-    public void saveExercise(Exercise exercise) {
-        exerciseRepo.save(exercise);
     }
 
     public List<Exercise> getExercisesByCategory(Integer category) {
@@ -45,5 +45,9 @@ public class RepositoryService {
 
     public List<Exercise> getAllExercises() {
         return exerciseRepo.findAll();
+    }
+
+    public void saveNewExercise(Exercise exercise) {
+        exerciseRepo.save(exercise);
     }
 }

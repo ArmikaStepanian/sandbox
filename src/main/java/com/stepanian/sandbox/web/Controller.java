@@ -2,6 +2,7 @@ package com.stepanian.sandbox.web;
 
 import com.stepanian.sandbox.counterApi.entity.Category;
 import com.stepanian.sandbox.counterApi.entity.Exercise;
+import com.stepanian.sandbox.counterApi.entity.Measure;
 import com.stepanian.sandbox.counterApi.service.RepositoryService;
 import com.stepanian.sandbox.pojo.DebitCard;
 import com.stepanian.sandbox.util.StringModifier;
@@ -29,7 +30,13 @@ public class Controller {
 
     @PostMapping(value = "/api/addCategory")
     public HttpEntity<HttpStatus> addCategory(@RequestBody Category category) {
-        repositoryService.saveCategory(category);
+        repositoryService.saveNewCategory(category);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/api/addExercise")
+    public HttpEntity<HttpStatus> addExercise(@RequestBody Exercise exercise) {
+        repositoryService.saveNewExercise(exercise);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -41,7 +48,12 @@ public class Controller {
 
     @GetMapping(value = "/api/allCategories")
     public HttpEntity<List<Category>> allCategories() {
-        return new ResponseEntity<>(repositoryService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(repositoryService.findAllCategories(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/allMeasures")
+    public HttpEntity<List<Measure>> allCategoriesMeasures() {
+        return new ResponseEntity<>(repositoryService.findAllMeasures(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/api/exercisesByCategory")
